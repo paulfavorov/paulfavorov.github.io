@@ -173,10 +173,9 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 18px;
-    padding: 3rem 2.4rem;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     min-height: 44vh;
     position: relative;
     overflow: hidden;
@@ -187,26 +186,41 @@
     top: 0; left: 0;
     width: 100%; height: 4px;
     background: var(--accent, var(--red));
+    z-index: 3;
   }
   .stat-card.red { --accent: var(--red); }
   .stat-card.blue { --accent: var(--blue-bright); }
   .stat-card.dark { --accent: var(--text); }
 
-  .stat-icon {
-    width: 116px; height: 116px;
-    border-radius: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .stat-image {
+    width: 100%;
+    height: 52%;
+    background-size: cover;
+    background-position: center;
+    background-color: #0F172A;
+    flex-shrink: 0;
+    position: relative;
   }
-  .stat-icon svg { width: 60px; height: 60px; stroke-width: 1.8; }
-  .stat-card.red .stat-icon { background: var(--red-soft); color: var(--red); }
-  .stat-card.blue .stat-icon { background: var(--blue-soft); color: var(--blue); }
-  .stat-card.dark .stat-icon { background: #F1F5F9; color: var(--text); }
+  .stat-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.18) 100%);
+    pointer-events: none;
+  }
+
+  .stat-body {
+    flex: 1;
+    padding: 2.4rem 2.4rem 2.6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4rem;
+  }
 
   .stat-number {
     font-family: 'Manrope', sans-serif;
-    font-size: clamp(4.5rem, 8.5vw, 7.5rem);
+    font-size: clamp(3.6rem, 6.8vw, 6rem);
     font-weight: 900;
     line-height: 0.9;
     letter-spacing: -0.05em;
@@ -217,12 +231,12 @@
 
   .stat-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(1.2rem, 1.7vw, 1.55rem);
+    font-size: clamp(1.1rem, 1.5vw, 1.4rem);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.22em;
     color: var(--text-2);
-    margin-top: 1.4rem;
+    margin-top: 1.1rem;
   }
 
   /* ============== SLIDE 3: CHAOS ============== */
@@ -863,31 +877,25 @@
 
   <div class="stat-grid">
     <div class="stat-card red">
-      <div class="stat-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 9h1"/><path d="M14 9h1"/><path d="M9 13h1"/><path d="M14 13h1"/><path d="M9 17h6"/></svg>
-      </div>
-      <div>
+      <div class="stat-image" style="background-image:url('https://paulfavorov.github.io/destinations.jpg');"></div>
+      <div class="stat-body">
         <div class="stat-number">50M<span style="font-size:0.55em;">+</span></div>
         <div class="stat-label">Destinations</div>
       </div>
     </div>
 
     <div class="stat-card blue">
-      <div class="stat-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      </div>
-      <div>
-        <div class="stat-number" style="font-size:clamp(3.5rem,6.5vw,5.5rem);">Real-time</div>
+      <div class="stat-image" style="background-image:url('https://paulfavorov.github.io/realtime.jpg');"></div>
+      <div class="stat-body">
+        <div class="stat-number" style="font-size:clamp(2.4rem,4.4vw,3.8rem);">Real-time</div>
         <div class="stat-label">Expectations</div>
       </div>
     </div>
 
     <div class="stat-card dark">
-      <div class="stat-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m22 11-3 3-2-2"/></svg>
-      </div>
-      <div>
-        <div class="stat-number" style="font-size:clamp(3.5rem,6.5vw,5.5rem);">Critical</div>
+      <div class="stat-image" style="background-image:url('https://paulfavorov.github.io/staffing.jpg');"></div>
+      <div class="stat-body">
+        <div class="stat-number" style="font-size:clamp(2.4rem,4.4vw,3.8rem);">Critical</div>
         <div class="stat-label">Staffing</div>
       </div>
     </div>
@@ -1071,7 +1079,7 @@
   </button>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 (function() {
   const slides = document.querySelectorAll('.slide');
   const dots = document.querySelectorAll('.dot');
