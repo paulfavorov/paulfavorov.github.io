@@ -168,7 +168,7 @@
   .feature-grid { flex: 1; display: grid; grid-template-columns: 1.25fr 0.95fr; gap: 3.4rem; align-items: center; min-height: 0; margin-top: 2vh; }
   .feature-grid.flip { grid-template-columns: 0.95fr 1.25fr; }
   .feature-grid.flip .feature-media { order: -1; }
-  .feature-media { aspect-ratio: 16 / 10; max-height: 72vh; }
+  .feature-media { aspect-ratio: 16 / 9; max-height: 72vh; }
   .feature-left { display: flex; flex-direction: column; justify-content: center; }
   .feature-title { font-family: 'Manrope', sans-serif; font-size: clamp(2.4rem, 4.6vw, 4.2rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1; margin-top: 1.1rem; color: var(--text); }
   .feature-body { font-size: clamp(1.1rem, 1.5vw, 1.42rem); color: var(--text-2); line-height: 1.5; margin-top: 1.5rem; max-width: 36ch; }
@@ -373,11 +373,10 @@
     <div class="brand-logo" role="img" aria-label="HelloPackage"></div>
     <div class="meta-row"><span class="live-pill"><span class="live-dot"></span>Computer vision</span></div>
   </div>
-  <div class="feature-grid">
-    <div class="media feature-media">
+  <div class="feature-grid" style="grid-template-columns:0.66fr 1fr;">
+    <div class="media feature-media" style="aspect-ratio:4/5; height:70vh; max-height:70vh; width:auto; justify-self:center; align-self:center;">
       <video autoplay muted loop playsinline preload="auto">
         <source src="https://paulfavorov.github.io/HelloPackageDemo/NoCodes.mp4" type="video/mp4" />
-        <source src="https://paulfavorov.github.io/Slide4.mp4" type="video/mp4" />
       </video>
       <div class="cv-hud"><span class="cv-hud-dot"></span><span>HP-VISION · LIVE</span></div>
     </div>
@@ -483,7 +482,7 @@
     <div class="meta-row"><span class="live-pill"><span class="live-dot"></span>Why now</span></div>
   </div>
   <div class="moat-grid">
-    <div class="media" style="aspect-ratio:16/10; align-self:center;">
+    <div class="media" style="aspect-ratio:16/9; align-self:center;">
       <video autoplay muted loop playsinline preload="auto" poster="https://paulfavorov.github.io/room-robot-concept.jpg">
         <source src="https://paulfavorov.github.io/HelloPackageDemo/external/RobotArms.mp4" type="video/mp4" />
       </video>
