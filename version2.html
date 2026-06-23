@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HelloPackage · Physical-World AI · AI Engineer World's Fair 2026</title>
+<meta name="description" content="Computer vision, VLMs, and agents running real package rooms at 200+ communities. Physical-world AI, in production." />
+<link rel="icon" href="https://paulfavorov.github.io/favicon.ico?v=2" sizes="any" />
+<link rel="icon" type="image/png" href="https://paulfavorov.github.io/favicon.png?v=2" />
+<link rel="apple-touch-icon" href="https://paulfavorov.github.io/apple-touch-icon.png?v=2" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --bg-soft: #F8FAFC;
+    --bg-card: #FAFBFD;
+    --text: #0B1220;
+    --text-2: #475569;
+    --text-3: #94A3B8;
+    --red: #E71D25;
+    --red-soft: #FEF2F2;
+    --blue: #0080A5;
+    --blue-bright: #00AED5;
+    --blue-soft: #F0FAFD;
+    --border: #E2E8F0;
+    --border-strong: #CBD5E1;
+    --ink: #0F172A;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; width: 100%; overflow: hidden; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-feature-settings: 'ss01', 'cv11';
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .accent { color: var(--red); font-style: italic; }
+  .accent-cyan { color: var(--blue); font-style: italic; }
+
+  .deck { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: none; flex-direction: column;
+    padding: 4.2vh 5vw 3vh;
+    background: var(--bg);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .slide.active { display: flex; opacity: 1; }
+  .slide.dark { background: var(--ink); color: #fff; }
+  .slide.dark .seg-label, .slide.dark .counter-foot { color: rgba(255,255,255,0.5); }
+
+  /* header / footer */
+  .page-header { display: flex; justify-content: space-between; align-items: center; flex: none; }
+  .brand-logo {
+    width: 188px; height: 60px;
+    background-image: url('https://paulfavorov.github.io/Logo.jpg');
+    background-size: contain; background-repeat: no-repeat; background-position: left center;
+  }
+  .slide.dark .brand-logo { background-image: url('https://paulfavorov.github.io/Logo-transparent.png'); }
+  .meta-row {
+    display: flex; align-items: center; gap: 0.8rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.18em; color: var(--text-3);
+  }
+  .meta-dot { width: 4px; height: 4px; background: currentColor; border-radius: 50%; opacity: 0.6; }
+  .live-pill {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    color: var(--red);
+  }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 0 rgba(231,29,37,0.5); animation: ring 1.6s infinite; }
+  @keyframes ring { 0%{box-shadow:0 0 0 0 rgba(231,29,37,0.45);} 70%{box-shadow:0 0 0 8px rgba(231,29,37,0);} 100%{box-shadow:0 0 0 0 rgba(231,29,37,0);} }
+
+  .page-footer {
+    margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.18em; color: var(--text-3); flex: none;
+  }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 0.7rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.22em; color: var(--red);
+  }
+  .eyebrow::before { content: ''; width: 32px; height: 1.5px; background: var(--red); }
+  .slide.dark .eyebrow { color: var(--blue-bright); }
+  .slide.dark .eyebrow::before { background: var(--blue-bright); }
+
+  .display {
+    font-family: 'Manrope', sans-serif; font-weight: 800;
+    letter-spacing: -0.04em; line-height: 0.98; color: var(--text);
+  }
+  .slide.dark .display { color: #fff; }
+  .h-hero { font-size: clamp(3.4rem, 8.2vw, 8.4rem); line-height: 0.92; letter-spacing: -0.045em; }
+  .h-title { font-size: clamp(2.8rem, 6vw, 5.4rem); }
+  .lead { font-size: clamp(1.15rem, 1.9vw, 1.7rem); color: var(--text-2); font-weight: 400; line-height: 1.45; letter-spacing: -0.01em; }
+  .slide.dark .lead { color: rgba(255,255,255,0.72); }
+
+  /* ============ SLIDE 1 — HERO ============ */
+  .hero-grid { flex: 1; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 3.6rem; align-items: center; min-height: 0; }
+  .hero-left { display: flex; flex-direction: column; justify-content: center; }
+  .hero-divider { width: 110px; height: 3px; background: var(--text); margin: 2rem 0 1.6rem; }
+  .speaker-block { display: flex; align-items: center; gap: 1rem; margin-top: 3rem; }
+  .speaker-bar { width: 4px; height: 50px; background: var(--red); }
+  .speaker-name { display: block; font-family: 'Manrope', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
+  .speaker-role { display: block; font-size: 1.1rem; color: var(--text-2); margin-top: 5px; font-weight: 500; }
+  .builtwith { margin-top: 2.2rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-3); }
+  .builtwith b { color: var(--text-2); font-weight: 600; }
+
+  .media {
+    border-radius: 18px; overflow: hidden; position: relative; background: #000;
+    box-shadow: 0 30px 80px -28px rgba(2,132,199,0.42);
+    border: 1px solid rgba(34,171,224,0.22);
+  }
+  .media video, .media img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero-media { aspect-ratio: 16 / 9; max-height: 64vh; }
+  .cv-hud {
+    position: absolute; top: 1rem; right: 1rem; display: flex; align-items: center; gap: 0.55rem;
+    background: rgba(15,23,42,0.82); border: 1px solid rgba(34,171,224,0.32);
+    padding: 0.4rem 0.85rem; border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: #22D3EE; letter-spacing: 0.12em;
+  }
+  .cv-hud-dot { width: 6px; height: 6px; background: #22D3EE; border-radius: 50%; box-shadow: 0 0 8px #22D3EE; animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+  .media-cap {
+    position: absolute; bottom: 1rem; left: 1rem; background: rgba(15,23,42,0.82);
+    border: 1px solid rgba(255,255,255,0.12); padding: 0.55rem 0.9rem; border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: #E2E8F0;
+  }
+
+  /* ============ STAT GRID (slide 2) ============ */
+  .section-head { margin-top: 3.5vh; flex: none; }
+  .stat-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.6rem; align-content: center; margin-top: 2.4vh; }
+  .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; display: flex; flex-direction: column; min-height: 47vh; position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent, var(--red)); z-index: 3; }
+  .stat-card.red { --accent: var(--red); }
+  .stat-card.blue { --accent: var(--blue-bright); }
+  .stat-card.dark { --accent: var(--text); }
+  .stat-image { width: 100%; height: 40%; background-size: cover; background-position: center; background-color: #0F172A; flex-shrink: 0; }
+  .stat-body { flex: 1; padding: 1.6rem 1.7rem 1.8rem; display: flex; flex-direction: column; justify-content: flex-start; }
+  .stat-number { font-family: 'Manrope', sans-serif; font-size: clamp(2.6rem, 5vw, 4.4rem); font-weight: 900; line-height: 0.9; letter-spacing: -0.05em; color: var(--text); }
+  .stat-card.red .stat-number { color: var(--red); }
+  .stat-card.blue .stat-number { color: var(--blue); }
+  .stat-label { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: var(--text-2); margin-top: 0.7rem; line-height: 1.3; }
+  .stat-desc { font-size: clamp(0.8rem, 0.95vw, 0.98rem); color: var(--text-2); line-height: 1.46; margin-top: 0.85rem; }
+  .stat-sub { font-size: 0.92rem; color: var(--text-3); margin-top: 0.5rem; font-weight: 500; }
+
+  /* ============ STACK (slide 3) ============ */
+  .stack-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.7rem; align-content: start; margin-top: 1.1vh; }
+  .layer {
+    position: relative;
+    background: var(--bg-card); border: 1px solid var(--border); border-top: 6px solid var(--red);
+    border-radius: 16px; padding: 1.5rem 1.5rem 1.6rem; display: flex; flex-direction: column;
+  }
+  .layer-img { margin-top: 1.1rem; width: 100%; height: clamp(170px, 27vh, 320px); object-fit: cover; border-radius: 10px; border: 1px solid var(--border); display: block; }
+  .layer.cyan { border-top-color: var(--blue-bright); }
+  .layer.dark { border-top-color: var(--text); }
+  .layer:not(:last-child)::after {
+    content: '\2192'; position: absolute; left: calc(100% + 0.2rem); top: 50%; transform: translateY(-50%);
+    font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--text-3); z-index: 5;
+  }
+  .layer-num { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: var(--red); }
+  .layer.cyan .layer-num { color: var(--blue); }
+  .layer.dark .layer-num { color: var(--text); }
+  .layer-name { font-family: 'Manrope', sans-serif; font-size: clamp(1.65rem, 2.5vw, 2.3rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.0; margin: 0.65rem 0 0.7rem; color: var(--text); }
+  .layer-lede { font-size: clamp(0.95rem, 1.12vw, 1.1rem); color: var(--text); font-weight: 600; line-height: 1.42; margin-bottom: 1.05rem; }
+  .cap-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+  .cap-list li { position: relative; padding-left: 1.15rem; font-size: clamp(0.85rem, 1.02vw, 1.0rem); color: var(--text-2); line-height: 1.34; }
+  .cap-list li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 7px; height: 7px; border-radius: 2px; background: var(--red); }
+  .layer.cyan .cap-list li::before { background: var(--blue); }
+  .layer.dark .cap-list li::before { background: var(--text); }
+  .cap-list li b { color: var(--text); font-weight: 700; }
+  /* legacy (unused) */
+  .layer-desc { font-size: clamp(1rem, 1.25vw, 1.18rem); color: var(--text-2); line-height: 1.5; }
+  .layer-desc b { color: var(--text); font-weight: 700; }
+  .layer-tag { margin-top: auto; padding-top: 1.4rem; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); }
+
+  /* ============ VIDEO-FEATURE (slides 4,5,6) ============ */
+  .feature-grid { flex: 1; display: grid; grid-template-columns: 1.25fr 0.95fr; gap: 3.4rem; align-items: center; min-height: 0; margin-top: 2vh; }
+  .feature-grid.flip { grid-template-columns: 0.95fr 1.25fr; }
+  .feature-grid.flip .feature-media { order: -1; }
+  .feature-media { aspect-ratio: 16 / 9; max-height: 72vh; }
+  .feature-left { display: flex; flex-direction: column; justify-content: center; }
+  .feature-title { font-family: 'Manrope', sans-serif; font-size: clamp(2.4rem, 4.6vw, 4.2rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1; margin-top: 1.1rem; color: var(--text); }
+  .feature-body { font-size: clamp(1.1rem, 1.5vw, 1.42rem); color: var(--text-2); line-height: 1.5; margin-top: 1.5rem; max-width: 36ch; }
+  .feature-body b { color: var(--text); font-weight: 700; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.8rem; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.95rem;
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-2);
+  }
+  .chip b { color: var(--red); font-weight: 700; }
+  .chip.cyan b { color: var(--blue); }
+
+  /* VLM query mock (slide 5) */
+  .vlm-chat { display: flex; flex-direction: column; gap: 0.9rem; margin-top: 1.8rem; max-width: 44ch; }
+  .vlm-q, .vlm-a { padding: 1rem 1.2rem; border-radius: 14px; font-size: clamp(0.95rem, 1.15vw, 1.12rem); line-height: 1.45; }
+  .vlm-q { background: var(--ink); color: #fff; border-top-left-radius: 4px; align-self: flex-start; }
+  .vlm-a { background: var(--blue-soft); color: var(--text); border: 1px solid #BAE6F3; border-top-right-radius: 4px; align-self: stretch; }
+  .vlm-a b { color: var(--blue); font-weight: 700; }
+  .vlm-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-3); margin-bottom: 0.2rem; }
+
+  /* ============ PROOF (slide 7) ============ */
+  .proof-grid { flex: 1; display: grid; grid-template-columns: 0.95fr 1.05fr; gap: 3.2rem; align-items: center; min-height: 0; margin-top: 2vh; }
+  .proof-left { display: flex; flex-direction: column; justify-content: center; }
+  .big-stat { font-family: 'Manrope', sans-serif; font-size: clamp(7rem, 15vw, 15rem); font-weight: 900; line-height: 0.82; letter-spacing: -0.06em; background: linear-gradient(135deg, var(--text) 0%, var(--red) 82%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .big-stat .plus { -webkit-text-fill-color: var(--red); color: var(--red); }
+  .big-stat-label { font-family: 'Manrope', sans-serif; font-size: clamp(1.8rem, 3.2vw, 2.8rem); font-weight: 800; color: var(--text); margin-top: 0.8rem; letter-spacing: -0.03em; line-height: 1.02; }
+  .big-stat-sub { font-size: 1.05rem; color: var(--text-2); margin-top: 1rem; font-weight: 500; }
+  .proof-media { aspect-ratio: 1613 / 921; max-height: 62vh; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 25px 60px -25px rgba(15,23,42,0.32); background-size: cover; background-position: center; }
+  .proof-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 2rem; max-width: 30rem; }
+  .proof-cell { padding: 1rem 1.2rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; }
+  .proof-cell .pv { font-family: 'Manrope', sans-serif; font-size: clamp(1.3rem, 2vw, 1.8rem); font-weight: 800; color: var(--text); letter-spacing: -0.02em; line-height: 1; }
+  .proof-cell .pv.red { color: var(--red); }
+  .proof-cell .pv.cyan { color: var(--blue); }
+  .proof-cell .pl { font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); margin-top: 0.45rem; }
+
+  /* ============ MOAT (slide 8 — dark) ============ */
+  .moat-grid { flex: 1; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 3.5rem; align-items: center; min-height: 0; margin-top: 2vh; }
+  .moat-left { display: flex; flex-direction: column; justify-content: center; }
+  .moat-body { font-size: clamp(1.1rem, 1.5vw, 1.45rem); color: rgba(255,255,255,0.72); line-height: 1.5; margin-top: 1.4rem; max-width: 40ch; }
+  .moat-body b { color: #fff; font-weight: 700; }
+  .road-list { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 2rem; }
+  .road-item { display: flex; align-items: baseline; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid rgba(255,255,255,0.12); }
+  .road-num { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 600; color: var(--blue-bright); min-width: 30px; }
+  .road-text { font-family: 'Manrope', sans-serif; font-size: clamp(1.15rem, 1.7vw, 1.55rem); font-weight: 700; color: #fff; letter-spacing: -0.02em; }
+  .road-text span { color: rgba(255,255,255,0.5); font-weight: 500; font-size: 0.85em; }
+
+  /* ============ CTA (slide 9) ============ */
+  .cta-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+  .cta-title { font-family: 'Manrope', sans-serif; font-size: clamp(4rem, 11vw, 11rem); font-weight: 900; line-height: 0.9; letter-spacing: -0.055em; color: var(--text); }
+  .cta-divider { width: 110px; height: 3px; background: var(--red); margin: 2rem 0 2.2rem; }
+  .cta-strip { display: flex; flex-wrap: wrap; gap: 3.5rem; }
+  .cta-item .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-2); }
+  .cta-item .val { font-family: 'Manrope', sans-serif; font-size: clamp(1.3rem, 2vw, 1.7rem); font-weight: 800; color: var(--text); margin-top: 0.6rem; letter-spacing: -0.02em; line-height: 1.2; }
+  .cta-item .val a { color: var(--text); text-decoration: none; }
+  .cta-invest { margin-top: 2.6rem; display: inline-flex; align-items: center; gap: 0.7rem; padding: 0.9rem 1.5rem; background: var(--red); color: #fff; border-radius: 100px; font-family: 'Manrope', sans-serif; font-weight: 800; font-size: clamp(1.05rem, 1.6vw, 1.4rem); letter-spacing: -0.01em; width: fit-content; }
+
+  /* ============ CLOSE SLIDE (proof + contact) ============ */
+  .close-body { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 1.5rem; min-height: 0; }
+  .close-contact { flex: none; display: flex; align-items: center; gap: 2.4rem; flex-wrap: wrap; border-top: 1px solid var(--border); padding-top: 1.4rem; }
+  .cc-item .lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em; color: var(--text-2); }
+  .cc-item .val { font-family: 'Manrope', sans-serif; font-size: clamp(1rem, 1.35vw, 1.26rem); font-weight: 800; color: var(--text); margin-top: 0.35rem; letter-spacing: -0.01em; }
+  .cc-item .val a { color: var(--text); text-decoration: none; }
+  .cc-item .val span { font-weight: 500; font-size: 0.82em; color: var(--text-2); }
+  .close-contact .cta-invest { margin-left: auto; margin-top: 0; }
+
+  /* ============ NAV + ATTRACT ============ */
+  .nav-bar {
+    position: fixed; bottom: 1.3rem; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 1rem;
+    background: rgba(255,255,255,0.92); backdrop-filter: blur(10px);
+    border: 1px solid var(--border); padding: 0.5rem 0.95rem; border-radius: 100px;
+    z-index: 100; box-shadow: 0 8px 32px -8px rgba(15,23,42,0.16);
+  }
+  .nav-btn { background: transparent; border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-2); }
+  .nav-btn:hover { background: var(--bg-soft); color: var(--text); }
+  .dots { display: flex; gap: 0.4rem; align-items: center; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border-strong); cursor: pointer; transition: all 0.2s; border: none; padding: 0; }
+  .dot.active { background: var(--red); width: 22px; border-radius: 4px; }
+  .auto-pill {
+    display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--red);
+    background: var(--red-soft); border: 1px solid #FECACA; border-radius: 100px; padding: 0.3rem 0.6rem;
+  }
+  .auto-pill .ad { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: pulse 1.4s infinite; }
+  body.manual .auto-pill { color: var(--text-3); background: var(--bg-soft); border-color: var(--border); }
+  body.manual .auto-pill .ad { background: var(--text-3); animation: none; }
+  .counter-foot { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-2); letter-spacing: 0.1em; min-width: 52px; text-align: center; }
+
+  /* attract progress bar (top) */
+  .attract-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--red); width: 0; z-index: 120; transition: width 0.2s linear; opacity: 0.85; }
+  body.manual .attract-bar { opacity: 0; }
+</style>
+</head>
+<body>
+
+<div class="attract-bar" id="attractBar"></div>
+
+<div class="deck">
+
+<!-- ===== SLIDE 1 — HERO ===== -->
+<section class="slide active" data-dur="11000">
+  <div class="page-header">
+    <div class="brand-logo" role="img" aria-label="HelloPackage"></div>
+    <div class="meta-row"><span class="live-pill"><span class="live-dot"></span>AI Engineer World's Fair 2026</span></div>
+  </div>
+  <div class="hero-grid">
+    <div class="hero-left">
+      <span class="eyebrow">Physical-world AI · In production</span>
+      <h1 class="display h-hero" style="margin-top:1.4rem;">We taught<br/>the mailroom<br/><span class="accent">to see.</span></h1>
+      <div class="hero-divider"></div>
+      <p class="lead">Computer vision, VLMs, and agents running <b>package rooms and mail centers</b> at 200+ communities.</p>
+      <div class="speaker-block">
+        <div class="speaker-bar"></div>
+        <div>
+          <span class="speaker-name">Paul Favorov</span>
+          <span class="speaker-role">CEO &amp; CTO · HelloPackage</span>
+        </div>
+      </div>
+      <div class="builtwith">Agents built with <b>Hyperagent</b></div>
+    </div>
+    <div class="media hero-media">
+      <video autoplay muted loop playsinline preload="auto">
+        <source src="https://paulfavorov.github.io/Slide4.mp4" type="video/mp4" />
+      </video>
+      <div class="cv-hud"><span class="cv-hud-dot"></span><span>HP-VISION · LIVE</span></div>
+      <div class="media-cap">Real package room · real-time tracking</div>
+    </div>
+  </div>
+  <div class="page-footer"><span class="seg-label">HelloPackage · Atlanta</span><span class="counter-foot">01 / 08</span></div>
+</section>
+
+<!-- ===== SLIDE 2 — THE OPPORTUNITY ===== -->
+<section class="slide" data-dur="9000">
+  <div class="page-header">
+    <div class="brand-logo" role="img" aria-label="HelloPackage"></div>
+    <div class="meta-row"><span>The market</span></div>
+  </div>
+  <div class="section-head">
+    <span class="eyebrow">Three trends drove the chaos</span>
+    <h2 class="display h-title" style="margin-top:1rem;">Three trends. One <span class="accent">broken mailroom.</span></h2>
+    <p class="lead" style="margin-top:1rem; max-width:78ch;">E-commerce exploded delivery destinations. Resident expectations caught up to Amazon-grade real-time. And the staff meant to drive renewals are stuck sorting boxes. Three forces collided — <b>the math doesn't work anymore.</b></p>
+  </div>
+  <div class="stat-grid" style="margin-top:2vh;">
+    <div class="stat-card red">
+      <div class="stat-image" style="background-image:url('https://paulfavorov.github.io/destinations.jpg');"></div>
+      <div class="stat-body">
+        <div class="stat-number">50M<span style="font-size:0.5em;">+</span></div>
+        <div class="stat-label">Drop-off points</div>
+        <p class="stat-desc">E-commerce exploded the number of delivery destinations. Every apartment door is now a logistics node — not a suburban porch.</p>
+      </div>
+    </div>
+    <div class="stat-card blue">
+      <div class="stat-image" style="background-image:url('https://paulfavorov.github.io/realtime.jpg');"></div>
+      <div class="stat-body">
+        <div class="stat-number">21.2B<span style="font-size:0.5em;">/yr</span></div>
+        <div class="stat-label">Packages · On demand</div>
+        <p class="stat-desc">Billions of parcels — and residents who expect them on demand. Pickup the moment they arrive, on their schedule, not yours.</p>
+      </div>
+    </div>
+    <div class="stat-card dark">
+      <div class="stat-image" style="background-image:url('https://paulfavorov.github.io/staffing.jpg');"></div>
+      <div class="stat-body">
+        <div class="stat-number" style="font-size:clamp(2.4rem,4.6vw,4rem);">10–20<span style="font-size:0.4em;"> hrs/wk</span></div>
+        <div class="stat-label">Revenue staff · Burned out</div>
+        <p class="stat-desc">Leasing and concierge — the roles that drive renewals — are stuck sorting boxes all week. Overworked. Stressed. Source: NMHC.</p>
+      </div>
+    </div>
+  </div>
+  <div class="page-footer"><span class="seg-label">The market</span><span class="counter-foot">02 / 08</span></div>
+</section>
+
+<!-- ===== SLIDE 3 — THE STACK ===== -->
+<section class="slide" data-dur="11000">
+  <div class="page-header">
+    <div class="brand-logo" role="img" aria-label="HelloPackage"></div>
+    <div class="meta-row"><span>The stack</span></div>
+  </div>
+  <div class="section-head">
+    <span class="eyebrow">What we built</span>
+    <h2 class="display h-title" style="margin-top:0.8rem;">Three AI layers. <span class="accent">One room.</span></h2>
+    <p class="lead" style="margin-top:0.8rem; max-width:72ch;">Perception becomes understanding becomes action — every package, end to end.</p>
+  </div>
+  <div class="stack-grid">
+    <div class="layer">
+      <span class="layer-num">Layer 01 · Perception</span>
+      <h3 class="layer-name">Computer vision</h3>
+      <p class="layer-lede"><b>HP-Vision</b> turns raw camera feeds into structured visual events.</p>
+      <ul class="cap-list">
+        <li><b>Object detection</b> — every parcel, shelf &amp; person</li>
+        <li><b>Semantic segmentation</b> — shelves, floor zones, doors</li>
+        <li><b>Human pose</b> &amp; joint tracking</li>
+        <li><b>Labeling</b> &amp; classification of everything it sees</li>
+      </ul>
+      <img class="layer-img" src="https://paulfavorov.github.io/vision-cv.jpg" alt="Computer vision detecting packages, a pose-tracked person, and a shipping label" />
+    </div>
+    <div class="layer cyan">
+      <span class="layer-num">Layer 02 · Understanding</span>
+      <h3 class="layer-name">Vision-language models</h3>
+      <p class="layer-lede">Visual events fuse with room events into one <b>live model of the room</b>.</p>
+      <ul class="cap-list">
+        <li>Vision events meet <b>pin codes, deliveries &amp; pickups</b></li>
+        <li><b>Driver sessions</b>, resident sign-ups, package volume</li>
+        <li>Correlated in real time — who, what, where, when</li>
+        <li>Plain-language: <b>“what’s happening right now?”</b></li>
+      </ul>
+      <img class="layer-img" src="https://paulfavorov.github.io/security-alert.jpg" alt="HP-Vision flags a security anomaly — alerts dispatched, secure the room" />
+    </div>
+    <div class="layer dark">
+      <span class="layer-num">Layer 03 · Action</span>
+      <h3 class="layer-name">Autonomous agents</h3>
+      <p class="layer-lede">Agents act on that understanding — <b>orchestrating the system from the outside in</b>.</p>
+      <ul class="cap-list">
+        <li><b>Dispatch the room robot</b> to sort &amp; retrieve</li>
+        <li>Open <b>outage &amp; service requests</b> automatically</li>
+        <li><b>Prep the room</b> for an incoming delivery surge</li>
+        <li>24/7 orchestration, built on <b>Hyperagent</b></li>
+      </ul>
+      <img class="layer-img" src="https://paulfavorov.github.io/agents.jpg" alt="Autonomous agents — room robot moving packages and the AI agent guiding residents" />
+    </div>
+  </div>
+  <div class="page-footer"><span class="seg-label">The platform</span><span class="counter-foot">03 / 08</span></div>
+</section>
+
+<!-- ===== SLIDE 4 — CV IN ACTION ===== -->
+<section class="slide" data-dur="12000">
+  <div class="page-header">
+    <div class="brand-logo" role="img" aria-label="HelloPackage"></div>
+    <div class="meta-row"><span class="live-pill"><span class="live-dot"></span>Computer vision</span></div>
+  </div>
+  <div class="feature-grid" style="grid-template-columns:0.66fr 1fr;">
+    <div class="media feature-media" style="aspect-ratio:4/5; height:70vh; max-height:70vh; width:auto; justify-self:center; align-self:center;">
+      <video autoplay muted loop playsinline preload="auto">
+        <source src="https://paulfavorov.github.io/HelloPackageDemo/NoCodes.mp4" type="video/mp4" />
+      </video>
+      <div class="cv-hud"><span class="cv-hud-dot"></span><span>HP-VISION · LIVE</span></div>
+    </div>
+    <div class="feature-left">
+      <span class="eyebrow">Computer vision</span>
+      <h2 class="feature-title">Every package.<br/>Every <span class="accent">interaction.</span></h2>
+      <p class="feature-body">No scans, no codes, no manual logs. HP-Vision sees the drop-off, the pickup, and everything in between — and flags the anomaly before staff would ever notice.</p>
+      <div class="chip-row">
+        <span class="chip"><b>4×</b>&nbsp;locker density</span>
+        <span class="chip"><b>52%</b>&nbsp;faster check-in</span>
+        <span class="chip">visual audit trail</span>
+      </div>
+    </div>
+  </div>
+  <div class="page-footer"><span class="seg-label">HP-Vision</span><span class="counter-foot">04 / 08</span></div>
+</section>
+
+<!-- ===== SLIDE 5 — VLM UNDERSTANDING ===== -->
+<section class="slide" data-dur="12000">
+  <div class="page-header">
+    <div class="brand-logo" role="img" aria-label="HelloPackage"></div>
+    <div class="meta-row"><span>Vision-language models</span></div>
+  </div>
+  <div class="feature-grid flip">
+    <div class="media feature-media">
+      <video autoplay muted loop playsinline preload="auto">
+        <source src="https://paulfavorov.github.io/HelloPackageDemo/RoomResident.mp4" type="video/mp4" />
+        <source src="https://paulfavorov.github.io/Slide5.mp4" type="video/mp4" />
+      </video>
+      <div class="cv-hud"><span class="cv-hud-dot"></span><span>VLM · SCENE READ</span></div>
+    </div>
+    <div class="feature-left">
+      <span class="eyebrow">Vision-language models</span>
+      <h2 class="feature-title">The room <span class="accent-cyan">understands itself.</span></h2>
+      <div class="vlm-chat">
+        <div>
+          <div class="vlm-tag">Representative query</div>
+          <div class="vlm-q">"What's overflowing in Room B right now?"</div>
+        </div>
+        <div class="vlm-a">7 parcels on the floor zone — <b>3 oversize</b>. Unit 1407's package arrived 11:02a, still unclaimed. Carrier compliance dropped below 60% this morning.</div>
+      </div>
+    </div>
+  </div>
+  <div class="page-footer"><span class="seg-label">Understanding</span><span class="counter-foot">05 / 08</span></div>
+</section>
+
+<!-- ===== SLIDE 6 — AGENTS ===== -->
+<section class="slide" data-dur="12000">
+  <div class="page-header">
+    <div class="brand-logo" role="img" aria-label="HelloPackage"></div>
+    <div class="meta-row"><span class="live-pill"><span class="live-dot"></span>Agents</span></div>
+  </div>
+  <div class="feature-grid">
+    <div class="media feature-media">
+      <video autoplay muted loop playsinline preload="auto">
+        <source src="https://paulfavorov.github.io/HelloPackageDemo/DeliveryDriverAmazon.mp4" type="video/mp4" />
+        <source src="https://paulfavorov.github.io/Slide5.mp4" type="video/mp4" />
+      </video>
+      <div class="cv-hud"><span class="cv-hud-dot"></span><span>AGENT · 24/7</span></div>
+    </div>
+    <div class="feature-left">
+      <span class="eyebrow">Agents</span>
+      <h2 class="feature-title">Agents run<br/>the room. <span class="accent">24/7.</span></h2>
+      <p class="feature-body">Drivers get guided in and held accountable. Residents get answered. Exceptions, returns, and clean-up get handled — without a human in the loop. Built on <b>Hyperagent</b>.</p>
+      <div class="chip-row">
+        <span class="chip"><b>98.7%</b>&nbsp;driver participation</span>
+        <span class="chip">vs. 30–40% industry</span>
+        <span class="chip">24/7 resident support</span>
+      </div>
+    </div>
+  </div>
+  <div class="page-footer"><span class="seg-label">Autonomous ops</span><span class="counter-foot">06 / 08</span></div>
+</section>
+
+<!-- ===== SLIDE 7 — WHY NOW: ROBOTICS (dark) ===== -->
+<section class="slide dark" data-dur="12000">
+  <div class="page-header">
+    <div class="brand-logo" role="img" aria-label="HelloPackage"></div>
+    <div class="meta-row"><span class="live-pill"><span class="live-dot"></span>Why now</span></div>
+  </div>
+  <div class="moat-grid">
+    <div class="media" style="aspect-ratio:16/9; align-self:center;">
+      <video autoplay muted loop playsinline preload="auto" poster="https://paulfavorov.github.io/room-robot-concept.jpg">
+        <source src="https://paulfavorov.github.io/RobotArms.mp4" type="video/mp4" />
+      </video>
+      <div class="cv-hud"><span class="cv-hud-dot"></span><span>ROOM ROBOT · LIVE</span></div>
+      <div class="media-cap">Autonomous sort &amp; retrieval</div>
+    </div>
+    <div class="moat-left">
+      <span class="eyebrow">Why now · Robotics</span>
+      <h2 class="display h-title" style="margin-top:1rem;">The robot <span class="accent-cyan">moves in.</span></h2>
+      <p class="moat-body">Layer 3, in the flesh. Meet the <b>HelloPackage room robot</b> — it sorts, shelves, and retrieves parcels autonomously, no staff in the loop. Trained on <b>millions of real package events</b> from 200+ live rooms, it's the first node in a fully robotic building.</p>
+      <div class="road-list" style="margin-top:1.5rem;">
+        <div class="road-item"><span class="road-num">02</span><span class="road-text">Autonomous security <span>· 24/7 patrol</span></span></div>
+        <div class="road-item"><span class="road-num">03</span><span class="road-text">Elevator + robot mobility <span>· lobby to door</span></span></div>
+        <div class="road-item"><span class="road-num">04</span><span class="road-text">3D digital twins <span>· every room, scanned</span></span></div>
+      </div>
+      <div style="margin-top:1.4rem; font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.5);">1 U.S. patent issued · the data trains the fleet</div>
+    </div>
+  </div>
+  <div class="page-footer"><span class="seg-label">Robotics</span><span class="counter-foot">07 / 08</span></div>
+</section>
+
+<!-- ===== SLIDE 8 — PROOF + CONTACT (close) ===== -->
+<section class="slide" data-dur="14000">
+  <div class="page-header">
+    <div class="brand-logo" role="img" aria-label="HelloPackage"></div>
+    <div class="meta-row"><span class="live-pill"><span class="live-dot"></span>In production · Let's talk</span></div>
+  </div>
+  <div class="close-body">
+    <div class="proof-grid" style="flex:none; margin-top:0;">
+      <div class="proof-left">
+        <span class="eyebrow">Proven at scale</span>
+        <div class="big-stat" style="font-size:clamp(5rem,9.5vw,9.5rem); margin-top:0.5rem;">200<span class="plus">+</span></div>
+        <div class="big-stat-label" style="font-size:clamp(1.5rem,2.6vw,2.2rem);">communities live.</div>
+        <div class="big-stat-sub">70,000+ residents · 21 states · 27 metros</div>
+        <div class="proof-strip">
+          <div class="proof-cell"><div class="pv red">12 of 20</div><div class="pl">NMHC Top 20 operators</div></div>
+          <div class="proof-cell"><div class="pv cyan">4.5 / 5</div><div class="pl">Resident rating</div></div>
+          <div class="proof-cell"><div class="pv">4×</div><div class="pl">Density vs. lockers</div></div>
+          <div class="proof-cell"><div class="pv">98.7%</div><div class="pl">Driver participation</div></div>
+        </div>
+      </div>
+      <div class="proof-media" style="max-height:46vh; background-image:url('https://paulfavorov.github.io/HelloPackageDemo/partners-map.jpg');"></div>
+    </div>
+    <div class="close-contact">
+      <div class="cc-item">
+        <div class="lbl">Founder</div>
+        <div class="val">Paul Favorov <span>· CEO &amp; CTO</span></div>
+      </div>
+      <div class="cc-item">
+        <div class="lbl">Contact</div>
+        <div class="val"><a href="mailto:paulfavorov@packagesolutions.com">paulfavorov@packagesolutions.com</a> <span>· 404.558.0668</span></div>
+      </div>
+      <div class="cc-item">
+        <div class="lbl">Built with</div>
+        <div class="val">Hyperagent</div>
+      </div>
+      <!-- DATA FLAG: investor CTA is intentionally non-specific (no round size / valuation). Make explicit only with Dale's confirmation. -->
+      <div class="cta-invest">Investing in physical-world AI? Let's talk &rarr;</div>
+    </div>
+  </div>
+  <div class="page-footer"><span class="seg-label">Proven results · Let's talk</span><span class="counter-foot">08 / 08</span></div>
+</section>
+
+</div>
+
+<!-- ===== NAV ===== -->
+<div class="nav-bar">
+  <button class="nav-btn nav-prev" aria-label="Previous"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+  <div class="dots" id="dots"></div>
+  <span class="auto-pill" id="autoPill" title="Toggle attract loop"><span class="ad"></span><span id="autoLabel">Auto</span></span>
+  <span class="counter-foot" id="counter">01 / 08</span>
+  <button class="nav-btn nav-next" aria-label="Next"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total = slides.length;
+  var current = 0, manual = false;
+  var autoTimer = null, idleTimer = null, barRAF = null;
+  var AUTO_MS = 8000, IDLE_RESUME_MS = 45000;
+  var dotsWrap = document.getElementById('dots');
+  var counter = document.getElementById('counter');
+  var autoPill = document.getElementById('autoPill');
+  var autoLabel = document.getElementById('autoLabel');
+  var bar = document.getElementById('attractBar');
+
+  // build dots
+  var dots = [];
+  for (var i = 0; i < total; i++) {
+    var b = document.createElement('button');
+    b.className = 'dot' + (i === 0 ? ' active' : '');
+    (function(idx){ b.addEventListener('click', function(){ goManual(); show(idx); }); })(i);
+    dotsWrap.appendChild(b);
+    dots.push(b);
+  }
+
+  function slideDur(i){ return parseInt(slides[i].getAttribute('data-dur'), 10) || AUTO_MS; }
+
+  function restartVideos(i){
+    slides.forEach(function(s, si){
+      s.querySelectorAll('video').forEach(function(v){
+        if (si === i) { try { v.currentTime = 0; v.play().catch(function(){}); } catch(e){} }
+        else { try { v.pause(); } catch(e){} }
+      });
+    });
+  }
+
+  function runBar(ms){
+    if (barRAF) cancelAnimationFrame(barRAF);
+    if (manual) { bar.style.width = '0%'; return; }
+    var start = performance.now();
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+    function step(now){
+      var p = Math.min(1, (now - start) / ms);
+      bar.style.width = (p * 100) + '%';
+      if (p < 1 && !manual) barRAF = requestAnimationFrame(step);
+    }
+    barRAF = requestAnimationFrame(step);
+  }
+
+  function scheduleAuto(){
+    clearTimeout(autoTimer);
+    if (manual) return;
+    var ms = slideDur(current);
+    runBar(ms);
+    autoTimer = setTimeout(function(){ show((current + 1) % total); }, ms);
+  }
+
+  function show(i){
+    if (i === current) { /* still refresh timers below */ }
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = ((i % total) + total) % total;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    var c = (current + 1).toString().padStart(2, '0') + ' / ' + total.toString().padStart(2, '0');
+    counter.textContent = c;
+    restartVideos(current);
+    if (manual) { resetIdle(); bar.style.width = '0%'; }
+    else { scheduleAuto(); }
+  }
+  function next(){ show((current + 1) % total); }
+  function prev(){ show((current - 1 + total) % total); }
+
+  function goManual(){
+    manual = true;
+    document.body.classList.add('manual');
+    autoLabel.textContent = 'Paused';
+    clearTimeout(autoTimer);
+    if (barRAF) cancelAnimationFrame(barRAF);
+    bar.style.width = '0%';
+    resetIdle();
+  }
+  function resumeAttract(){
+    manual = false;
+    document.body.classList.remove('manual');
+    autoLabel.textContent = 'Auto';
+    scheduleAuto();
+  }
+  function resetIdle(){
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(resumeAttract, IDLE_RESUME_MS);
+  }
+  function toggleAuto(){ if (manual) resumeAttract(); else goManual(); }
+
+  // controls
+  document.querySelector('.nav-prev').addEventListener('click', function(){ goManual(); prev(); });
+  document.querySelector('.nav-next').addEventListener('click', function(){ goManual(); next(); });
+  autoPill.addEventListener('click', toggleAuto);
+
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { goManual(); next(); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { goManual(); prev(); e.preventDefault(); }
+    else if (e.key === 'Home') { goManual(); show(0); }
+    else if (e.key === 'End') { goManual(); show(total - 1); }
+    else if (e.key === 'p' || e.key === 'P') { toggleAuto(); }
+    else if (e.key === 'Escape') { window.parent.postMessage({ type: 'close-fullscreen' }, '*'); }
+  });
+
+  // tap zones: click left third = prev, right two-thirds = next (booth-friendly)
+  document.querySelector('.deck').addEventListener('click', function(e){
+    if (e.target.closest('a')) return;
+    goManual();
+    if (e.clientX < window.innerWidth * 0.33) prev(); else next();
+  });
+
+  var touchX = 0;
+  document.addEventListener('touchstart', function(e){ touchX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function(e){
+    var diff = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(diff) > 50) { goManual(); diff < 0 ? next() : prev(); }
+  });
+
+  window.addEventListener('message', function(e){
+    if (e.data && e.data.type === 'navigate') {
+      goManual();
+      if (e.data.direction === 'next') next(); else if (e.data.direction === 'prev') prev();
+    }
+  });
+
+  // kick off attract loop
+  restartVideos(0);
+  scheduleAuto();
+})();
+</script>
+
+</body>
+</html>
