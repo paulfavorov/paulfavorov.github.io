@@ -155,8 +155,9 @@
   .layer {
     position: relative;
     background: var(--bg-card); border: 1px solid var(--border); border-top: 6px solid var(--red);
-    border-radius: 16px; padding: 1.9rem 1.8rem 2rem; display: flex; flex-direction: column; min-height: 47vh;
+    border-radius: 16px; padding: 1.5rem 1.5rem 1.6rem; display: flex; flex-direction: column;
   }
+  .layer-img { margin-top: auto; width: 100%; height: clamp(105px, 15vh, 158px); object-fit: cover; border-radius: 10px; border: 1px solid var(--border); display: block; }
   .layer.cyan { border-top-color: var(--blue-bright); }
   .layer.dark { border-top-color: var(--text); }
   .layer:not(:last-child)::after {
@@ -380,6 +381,7 @@
         <li><b>Human pose</b> &amp; joint tracking</li>
         <li><b>Labeling</b> &amp; classification of everything it sees</li>
       </ul>
+      <img class="layer-img" src="https://paulfavorov.github.io/vision-cv.jpg" alt="Computer vision detecting packages, a pose-tracked person, and a shipping label" />
     </div>
     <div class="layer cyan">
       <span class="layer-num">Layer 02 · Understanding</span>
@@ -391,6 +393,7 @@
         <li>Correlated in real time — who, what, where, when</li>
         <li>Plain-language: <b>“what’s happening right now?”</b></li>
       </ul>
+      <img class="layer-img" src="https://paulfavorov.github.io/realtime.jpg" alt="Live model of the room — package and app events in real time" />
     </div>
     <div class="layer dark">
       <span class="layer-num">Layer 03 · Action</span>
@@ -402,6 +405,7 @@
         <li><b>Prep the room</b> for an incoming delivery surge</li>
         <li>24/7 orchestration, built on <b>Hyperagent</b></li>
       </ul>
+      <img class="layer-img" src="https://paulfavorov.github.io/room-robot-concept.jpg" alt="Autonomous room robot dispatched to sort and retrieve parcels" />
     </div>
   </div>
   <div class="page-footer"><span class="seg-label">The platform</span><span class="counter-foot">03 / 08</span></div>
