@@ -214,16 +214,19 @@
   .big-stat .plus { -webkit-text-fill-color: var(--red); color: var(--red); }
   .big-stat-label { font-family: 'Manrope', sans-serif; font-size: clamp(1.8rem, 3.2vw, 2.8rem); font-weight: 800; color: var(--text); margin-top: 0.8rem; letter-spacing: -0.03em; line-height: 1.02; }
   .big-stat-sub { font-size: 1.05rem; color: var(--text-2); margin-top: 1rem; font-weight: 500; }
+  .hero-duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; align-items: end; margin-top: 0.6rem; }
+  .hero-duo .big-stat { font-size: clamp(3rem, 6.2vw, 6.4rem); }
+  .hero-duo .big-stat-label { font-size: clamp(1.05rem, 1.7vw, 1.55rem); margin-top: 0.55rem; }
+  .big-stat.cyan { background: linear-gradient(135deg, var(--text) 0%, var(--blue-bright) 85%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .big-stat.cyan .plus { -webkit-text-fill-color: var(--blue-bright); color: var(--blue-bright); }
+  .hd-sub { font-size: 0.6em; color: var(--text-2); font-weight: 600; }
   .proof-media { aspect-ratio: 1613 / 921; max-height: 62vh; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 25px 60px -25px rgba(15,23,42,0.32); background-size: cover; background-position: center; }
-  .proof-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 2rem; max-width: 30rem; }
-  .proof-cell { padding: 1rem 1.2rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; }
-  .proof-cell .pv { font-family: 'Manrope', sans-serif; font-size: clamp(1.3rem, 2vw, 1.8rem); font-weight: 800; color: var(--text); letter-spacing: -0.02em; line-height: 1; }
+  .proof-strip { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.8rem; max-width: none; }
+  .proof-cell { padding: 1.4rem 1.6rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; }
+  .proof-cell .pv { font-family: 'Manrope', sans-serif; font-size: clamp(1.7rem, 2.7vw, 2.45rem); font-weight: 800; color: var(--text); letter-spacing: -0.02em; line-height: 1; }
   .proof-cell .pv.red { color: var(--red); }
   .proof-cell .pv.cyan { color: var(--blue); }
-  .proof-cell .pl { font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); margin-top: 0.45rem; }
-  .proof-cell.arr { grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; background: var(--blue-soft); border-color: var(--blue-bright); border-left: 4px solid var(--blue); }
-  .proof-cell.arr .pv { font-size: clamp(1.6rem, 2.6vw, 2.3rem); }
-  .proof-cell.arr .pl { margin-top: 0; color: var(--blue); }
+  .proof-cell .pl { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); margin-top: 0.6rem; }
 
   /* ============ MOAT (slide 8 — dark) ============ */
   .moat-grid { flex: 1; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 3.5rem; align-items: center; min-height: 0; margin-top: 2vh; }
@@ -542,11 +545,18 @@
     <div class="proof-grid" style="flex:none; margin-top:0;">
       <div class="proof-left">
         <span class="eyebrow">Proven at scale</span>
-        <div class="big-stat" style="font-size:clamp(5rem,9.5vw,9.5rem); margin-top:0.5rem;">200<span class="plus">+</span></div>
-        <div class="big-stat-label" style="font-size:clamp(1.5rem,2.6vw,2.2rem);">communities live.</div>
+        <div class="hero-duo">
+          <div class="hd">
+            <div class="big-stat">200<span class="plus">+</span></div>
+            <div class="big-stat-label">communities live.</div>
+          </div>
+          <div class="hd">
+            <div class="big-stat cyan">$3.0M</div>
+            <div class="big-stat-label">ARR <span class="hd-sub">· under contract</span></div>
+          </div>
+        </div>
         <div class="big-stat-sub">70,000+ residents · 21 states · 27 metros</div>
         <div class="proof-strip">
-          <div class="proof-cell arr"><div class="pv cyan">$3.0M ARR</div><div class="pl">Under contract</div></div>
           <div class="proof-cell"><div class="pv red">12 of 20</div><div class="pl">NMHC Top 20 operators</div></div>
           <div class="proof-cell"><div class="pv cyan">4.5 / 5</div><div class="pl">Resident rating</div></div>
           <div class="proof-cell"><div class="pv">4×</div><div class="pl">Density vs. lockers</div></div>
