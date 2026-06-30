@@ -221,6 +221,9 @@
   .proof-cell .pv.red { color: var(--red); }
   .proof-cell .pv.cyan { color: var(--blue); }
   .proof-cell .pl { font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-3); margin-top: 0.45rem; }
+  .proof-cell.arr { grid-column: 1 / -1; display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; background: var(--blue-soft); border-color: var(--blue-bright); border-left: 4px solid var(--blue); }
+  .proof-cell.arr .pv { font-size: clamp(1.6rem, 2.6vw, 2.3rem); }
+  .proof-cell.arr .pl { margin-top: 0; color: var(--blue); }
 
   /* ============ MOAT (slide 8 — dark) ============ */
   .moat-grid { flex: 1; display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 3.5rem; align-items: center; min-height: 0; margin-top: 2vh; }
@@ -538,6 +541,7 @@
         <div class="big-stat-label" style="font-size:clamp(1.5rem,2.6vw,2.2rem);">communities live.</div>
         <div class="big-stat-sub">70,000+ residents · 21 states · 27 metros</div>
         <div class="proof-strip">
+          <div class="proof-cell arr"><div class="pv cyan">$3.0M ARR</div><div class="pl">Under contract</div></div>
           <div class="proof-cell"><div class="pv red">12 of 20</div><div class="pl">NMHC Top 20 operators</div></div>
           <div class="proof-cell"><div class="pv cyan">4.5 / 5</div><div class="pl">Resident rating</div></div>
           <div class="proof-cell"><div class="pv">4×</div><div class="pl">Density vs. lockers</div></div>
