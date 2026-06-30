@@ -232,9 +232,9 @@
   .moat-body b { color: #fff; font-weight: 700; }
   .road-list { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 2rem; }
   .road-item { display: flex; align-items: baseline; gap: 1rem; padding: 0.85rem 0; border-bottom: 1px solid rgba(255,255,255,0.12); }
-  .road-num { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 600; color: var(--blue-bright); min-width: 30px; }
+  .road-num { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 600; color: var(--blue-bright); min-width: 78px; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
   .road-text { font-family: 'Manrope', sans-serif; font-size: clamp(1.15rem, 1.7vw, 1.55rem); font-weight: 700; color: #fff; letter-spacing: -0.02em; }
-  .road-text span { color: rgba(255,255,255,0.5); font-weight: 500; font-size: 0.85em; }
+  .road-text span { display: block; font-family: 'Inter', sans-serif; color: rgba(255,255,255,0.64); font-weight: 500; font-size: 0.92rem; line-height: 1.4; letter-spacing: 0; margin-top: 0.3rem; }
 
   /* ============ CTA (slide 9) ============ */
   .cta-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
@@ -523,9 +523,8 @@
       <h2 class="display h-title" style="margin-top:1rem;">The robot <span class="accent-cyan">moves in.</span></h2>
       <p class="moat-body">Layer 3, in the flesh. Meet the <b>HelloPackage room robot</b> — it sorts, shelves, and retrieves parcels autonomously, no staff in the loop. Trained on <b>millions of real package events</b> from 200+ live rooms, it's the first node in a fully robotic building.</p>
       <div class="road-list" style="margin-top:1.5rem;">
-        <div class="road-item"><span class="road-num">02</span><span class="road-text">Autonomous security <span>· 24/7 patrol</span></span></div>
-        <div class="road-item"><span class="road-num">03</span><span class="road-text">Elevator + robot mobility <span>· lobby to door</span></span></div>
-        <div class="road-item"><span class="road-num">04</span><span class="road-text">3D digital twins <span>· every room, scanned</span></span></div>
+        <div class="road-item"><span class="road-num">02 · Next</span><span class="road-text">The whole building.<span>Valet trash, maintenance, security &amp; access &mdash; same cameras, same agents.</span></span></div>
+        <div class="road-item"><span class="road-num">03 · Then</span><span class="road-text">The robot fleet.<span>Sort, patrol, deliver &mdash; autonomous robots on the same data + agent backbone.</span></span></div>
       </div>
       <div style="margin-top:1.4rem; font-family:'JetBrains Mono',monospace; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.5);">1 U.S. patent issued · the data trains the fleet</div>
     </div>
